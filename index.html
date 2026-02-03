@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Queres ser mi San Valentín? 💕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe4f1 25%, #ffd6e8 50%, #ffc9e0 75%, #ffb8d8 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Corazones flotantes de fondo */
+        .heart-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float-up linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes float-up {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Pantalla principal */
+        .screen {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .screen.hidden {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 4rem);
+            color: #d63384;
+            text-align: center;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: #c2185b;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 600;
+        }
+
+        .video-container {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            aspect-ratio: 16/9;
+            margin-bottom: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(214, 51, 132, 0.3);
+            border: 4px solid #fff;
+            animation: float-video 3s ease-in-out infinite;
+        }
+
+        @keyframes float-video {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Placeholder para video */
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff6b9d, #c2185b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #ff6b9d, #d63384);
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1) rotate(-2deg);
+            box-shadow: 0 12px 35px rgba(214, 51, 132, 0.4);
+        }
+
+        #noBtn {
+            background: linear-gradient(135deg, #e0e0e0, #bdbdbd);
+            color: #666;
+        }
+
+        #noBtn:hover {
+            transform: scale(0.95);
+            background: linear-gradient(135deg, #d0d0d0, #aaa);
+        }
+
+        /* Pantalla de aceptación */
+        .success-screen {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-screen h1 {
+            color: #d63384;
+            margin-bottom: 30px;
+        }
+
+        .celebration {
+            font-size: 4rem;
+            animation: celebrate 0.8s ease-in-out;
+        }
+
+        @keyframes celebrate {
+            0% { transform: scale(0) rotate(0deg); }
+            50% { transform: scale(1.2) rotate(180deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        .hearts-explosion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .explosion-heart {
+            position: absolute;
+            font-size: 30px;
+            animation: explode 2s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0) scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y)) scale(1);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .buttons-container {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Corazones flotantes de fondo -->
+    <div class="heart-bg" id="heartBg"></div>
+
+    <!-- Pantalla inicial -->
+    <div class="screen" id="questionScreen">
+        <h1>💖 Pregunta Super Importante 💖</h1>
+        <p class="subtitle">14 de Febrero de 2026</p>
+        
+        <div class="video-container">
+            <!-- Reemplaza el src con la URL de tu video -->
+            <video id="questionVideo" autoplay loop muted playsinline>
+                <source src="https://my.microsoftpersonalcontent.com/personal/0801ba9567617143/_layouts/15/download.aspx?UniqueId=f64ac8d6-9176-42b4-bbb4-24404d08294a&Translate=false&tempauth=v1e.eyJzaXRlaWQiOiI0ZTY4NjljNC0zMjk4LTQ5MzQtYjRhYS03ODc2OGQ1OGZiYzciLCJhcHBpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDA0ODE3MTBhNCIsImF1ZCI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMC9teS5taWNyb3NvZnRwZXJzb25hbGNvbnRlbnQuY29tQDkxODgwNDBkLTZjNjctNGM1Yi1iMTEyLTM2YTMwNGI2NmRhZCIsImV4cCI6IjE3NzAwNjk0MTQifQ.WR8ox7TTZZbmotTb-_-uTyCnjVrLAteqeMxUTkUzg9NY0Kj9DZ0q4HMixlh-zo3-3oD7PeIebQldI8qV_WQor66MF12E2o9nnEbIs9LykuCrD9zX0xZglmEaVBwavz3fGlKyCPvI0zGYSNDyV2UfKMxx2xSuFnUQcp4gHbTuIO3v607B4_3C-0KPhFQvkpG8vWZBdw2cFdAQYuC44pO0c9QgVHgKQ1vqTdCUIs7gWBrXVa_PvicpL6_n_l9l5kyf7GedT3nTqZJZW48MzM8CZyqRYzG-1t_PRU3LM4ycWQytRDsNK0pSU1EK7df1E9IFwrXXGLuwrzF2F-Nap172wxGGP-F-U6Xn70D-ArJIYwXsRrxEGFJSQjY2tdek9kxAHK26zwGgMmZB1i8FgBH7NgcqMb8kdGiRSVTvcGYtpVs.st2LDVK080BeB0g0dYQZRC0QlRmXEtiEu08X-UNddbg&ApiVersion=2.0" type="video/mp4">
+                <div class="video-placeholder">
+                    📹 Aquí va tu video de la pregunta<br>
+                    (Reemplaza "tu-video-pregunta.mp4" con tu archivo)
+                </div>
+            </video>
+        </div>
+
+        <h1 style="font-size: clamp(1.5rem, 4vw, 3rem); margin-bottom: 40px;">
+            ¿Querés ser mi San Valentín?
+        </h1>
+
+        <div class="buttons-container">
+            <button id="yesBtn">💝 ¡SÍ! 💝</button>
+            <button id="noBtn">No...</button>
+        </div>
+    </div>
+
+    <!-- Pantalla de aceptación -->
+    <div class="screen hidden" id="successScreen">
+        <div class="success-screen">
+            <div class="celebration">🎉💕🎊</div>
+            <h1>¡SABÍA QUE IBAS A DECIR QUE SÍ!</h1>
+            <p class="subtitle" style="font-size: 1.8rem; margin-bottom: 40px;">
+                ¡Nos vemos en San Valentín! 💖
+            </p>
+            
+            <div class="video-container">
+                <!-- Reemplaza el src con la URL de tu segundo video -->
+                <video id="successVideo" autoplay loop muted playsinline>
+                    <source src="https://my.microsoftpersonalcontent.com/personal/0801ba9567617143/_layouts/15/download.aspx?UniqueId=cb9e490c-d69e-4f68-a989-0eb3ecba64ac&Translate=false&tempauth=v1e.eyJzaXRlaWQiOiI0ZTY4NjljNC0zMjk4LTQ5MzQtYjRhYS03ODc2OGQ1OGZiYzciLCJhcHBpZCI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDA0ODE3MTBhNCIsImF1ZCI6IjAwMDAwMDAzLTAwMDAtMGZmMS1jZTAwLTAwMDAwMDAwMDAwMC9teS5taWNyb3NvZnRwZXJzb25hbGNvbnRlbnQuY29tQDkxODgwNDBkLTZjNjctNGM1Yi1iMTEyLTM2YTMwNGI2NmRhZCIsImV4cCI6IjE3NzAwNjkyMDYifQ.IegeWUVAJ-wBx_upii2jawLDi6gioVXKsU9x8L9vEfVO0lt-iRDc8DpqsTnqbfl6tUmtwbAv2FOq-sP2SFCPxoWqDm7es_dQX0VNGbmR67CROsvK2Y9N6u2SBzuMEAKoVqHGu7eJseaHuAsfijraWBgVKIWdHV7xsDP73sCthWXTrFnQWaMLVQdYEYiOUrGu815--V0RYAlu0RrTamrhxG1DMErZMoIr2wxqkvbOSTLR1yz1pE-_VLzEjLd_EMtNiHKoXaRbYO0WUNj2qqUeUp2OSBUFmuWoJLjyDOxGOgWCTENaztRD6DWwU76YKZoDM4rxD8Byvj5KbTpdLwyQWgjM41waO7hGY4Ezzn7IPPj8-AYJYVGDS1jBARExKmEpj4qBhAOyzhjYc8P1IJUv4R-5xBrGizN4ROay355vK50.PBzW3O5U-KVQgF2qveWD3Ta-O0ShsBP5l65yYI75JYQ&ApiVersion=2.0" type="video/mp4">
+                    <div class="video-placeholder">
+                        📹 Aquí va tu video de celebración<br>
+                        (Reemplaza "tu-video-celebracion.mp4" con tu archivo)
+                    </div>
+                </video>
+            </div>
+
+            <p style="font-size: 1.5rem; color: #d63384; margin-top: 30px;">
+                Te quiero mucho Magucha 💝
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Crear corazones flotantes de fondo
+        function createFloatingHearts() {
+            const heartBg = document.getElementById('heartBg');
+            const hearts = ['💖', '💕', '💗', '💓', '💝', '❤️', '🌹'];
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 5 + 8) + 's';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heartBg.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 13000);
+            }, 300);
+        }
+
+        createFloatingHearts();
+
+        // Funcionalidad de los botones
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const questionScreen = document.getElementById('questionScreen');
+        const successScreen = document.getElementById('successScreen');
+        
+        let clickCount = 0;
+        let currentScale = 1;
+
+        // Cuando presionan NO, agranda el botón SÍ
+        noBtn.addEventListener('click', () => {
+            clickCount++;
+            currentScale = 1 + (clickCount * 0.3);
+            yesBtn.style.transform = `scale(${currentScale})`;
+            
+            // Mensajes divertidos
+            const messages = [
+                '¿Estás segura?',
+                'Pensalo mejor',
+                'Mira lo que hace el boton Si',
+                'Por favor 🥺',
+                'Creo que queres apretar Si...',
+                'Ok me mato '
+            ];
+            
+            if (clickCount <= messages.length) {
+                noBtn.textContent = messages[clickCount - 1];
+            }
+            
+            // Hacer que el botón NO sea más pequeño
+            noBtn.style.transform = `scale(${1 - (clickCount * 0.1)})`;
+            
+            // Si presionan muchas veces, hacer que el botón NO desaparezca
+            if (clickCount >= 5) {
+                noBtn.style.opacity = '0.3';
+                noBtn.style.cursor = 'not-allowed';
+            }
+        });
+
+        // Cuando presionan SÍ
+        yesBtn.addEventListener('click', () => {
+            // Crear explosión de corazones
+            createHeartsExplosion();
+            
+            // Cambiar a la pantalla de éxito
+            setTimeout(() => {
+                questionScreen.classList.add('hidden');
+                successScreen.classList.remove('hidden');
+                
+                // Reproducir el video de celebración
+                const successVideo = document.getElementById('successVideo');
+                successVideo.play().catch(e => console.log('Video autoplay prevented'));
+            }, 500);
+        });
+
+        // Crear explosión de corazones al aceptar
+        function createHeartsExplosion() {
+            const container = document.createElement('div');
+            container.className = 'hearts-explosion';
+            document.body.appendChild(container);
+
+            const hearts = ['💖', '💕', '💗', '💓', '💝', '❤️'];
+            
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'explosion-heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = '50%';
+                heart.style.top = '50%';
+                
+                const angle = (Math.PI * 2 * i) / 30;
+                const distance = Math.random() * 300 + 200;
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+                
+                heart.style.setProperty('--x', x + 'px');
+                heart.style.setProperty('--y', y + 'px');
+                heart.style.animationDelay = (Math.random() * 0.3) + 's';
+                
+                container.appendChild(heart);
+            }
+
+            setTimeout(() => container.remove(), 2000);
+        }
+
+        // Intentar reproducir los videos (algunos navegadores bloquean autoplay)
+        window.addEventListener('load', () => {
+            const questionVideo = document.getElementById('questionVideo');
+            questionVideo.play().catch(e => console.log('Video autoplay prevented'));
+        });
+    </script>
+</body>
+</html>
